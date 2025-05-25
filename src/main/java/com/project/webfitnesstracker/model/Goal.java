@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
-@Getter @Setter @ToString @NoArgsConstructor
+@Getter @Setter @NoArgsConstructor
 @Entity
 @Table(name = "goals")
 public class Goal {
@@ -55,5 +55,19 @@ public class Goal {
     @Override
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Goal{" +
+               "id=" + id +
+               ", owner=" + owner +
+               ", description='" + description + '\'' +
+               ", targetValue=" + targetValue +
+               ", currentValue=" + currentValue +
+               ", startDate=" + startDate +
+               ", endDate=" + endDate +
+               ", isAchieved=" + isAchieved +
+               '}';
     }
 }
