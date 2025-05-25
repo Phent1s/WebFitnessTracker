@@ -10,7 +10,7 @@ import org.hibernate.proxy.HibernateProxy;
 import java.time.LocalDate;
 import java.util.Objects;
 
-@Getter @Setter @ToString @NoArgsConstructor
+@Getter @Setter @NoArgsConstructor
 @Entity
 @Table(name = "workouts")
 public class Workout {
@@ -49,5 +49,17 @@ public class Workout {
     @Override
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Workout{" +
+               "id=" + id +
+               ", owner=" + owner +
+               ", type=" + type +
+               ", date=" + date +
+               ", durationInMinutes=" + durationInMinutes +
+               ", caloriesBurned=" + caloriesBurned +
+               '}';
     }
 }
