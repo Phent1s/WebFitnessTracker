@@ -14,7 +14,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
@@ -36,11 +38,13 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE)
     List<Goal> myGoals;
 
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
     }
-
 
 
     @Override

@@ -1,10 +1,11 @@
 package com.project.webfitnesstracker.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.time.LocalDate;
@@ -20,19 +21,22 @@ public class Workout {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User owner;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private WorkoutType type;
+    @NotBlank(message = "Type can't be empty!")
+    private String type;
 
     @Column(nullable = false)
     private LocalDate date;
 
     @Column(name = "duration_minutes", nullable = false)
+    @NotNull
     private Integer durationInMinutes;
 
     @Column(name = "calories_burned", nullable = false)
+    @NotNull
     private Integer caloriesBurned;
 
     @Override
