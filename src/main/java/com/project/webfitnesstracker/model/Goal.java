@@ -1,17 +1,19 @@
 package com.project.webfitnesstracker.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "goals")
 public class Goal {
@@ -21,12 +23,14 @@ public class Goal {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User owner;
 
     @Column(nullable = false)
+    @NotBlank(message = "Description can't be empty!")
     private String description;
 
-    @Column(name = "target_value",nullable = false, precision = 10, scale = 2)
+    @Column(name = "target_value", nullable = false, precision = 10, scale = 2)
     private BigDecimal targetValue;
 
     @Column(name = "current_value", nullable = false, precision = 10, scale = 2)
