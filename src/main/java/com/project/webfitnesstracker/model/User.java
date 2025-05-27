@@ -1,5 +1,6 @@
 package com.project.webfitnesstracker.model;
 
+import com.project.webfitnesstracker.security.config.PasswordConfig;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
@@ -8,6 +9,7 @@ import org.hibernate.proxy.HibernateProxy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -22,7 +24,7 @@ import java.util.Objects;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_id_seq")
     private Long id;
 
     @Size(min = 3, max = 50)
@@ -40,6 +42,10 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
+
+    public void setPassword(String rawPassword, PasswordEncoder encoder) {
+        this.password = encoder.encode(rawPassword);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
