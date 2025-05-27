@@ -3,21 +3,21 @@ package com.project.webfitnesstracker.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
 @Getter @Setter @NoArgsConstructor
+@Builder(toBuilder = true)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "workouts")
 public class Workout {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "workouts_id_seq")
     private Long id;
 
     @ManyToOne
@@ -25,7 +25,7 @@ public class Workout {
     private User owner;
 
     @Column(nullable = false)
-    @NotBlank(message = "Type can't be empty!")
+    @NotBlank(message = "Workout type required!")
     private String type;
 
     @Column(nullable = false)
