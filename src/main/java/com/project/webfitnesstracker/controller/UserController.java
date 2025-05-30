@@ -27,77 +27,93 @@ public class UserController {
     @GetMapping("/register")
     public String register(Model model) {
         model.addAttribute("user", new UserCreateRequest());
-        return "register-user";
+        return "users/register-user";
     }
 
     @PostMapping("/register")
     public String register(@Validated @ModelAttribute("user") UserCreateRequest request,
-                         BindingResult result) {
+                           BindingResult result) {
         if (result.hasErrors()) {
-            return "register-user";
+            return "users/register-user";
         }
         userService.create(request);
         return "redirect:/login";
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    @GetMapping("/{id}/read")
-    public String read(@PathVariable Long id,
+    @GetMapping("/{userId}/read")
+    public String read(@PathVariable Long userId,
                        Model model) {
-        model.addAttribute("user", userService.readById(id));
-        return "user-info";
+        model.addAttribute("userId", userId);
+        model.addAttribute("user", userService.readById(userId));
+        return "users/user-info";
     }
 
     @PreAuthorize("hasAuthority('ADMIN') " +
-                  "or @userService.getAuthenticatedUser().id == #id")
-    @PostMapping("/{id}/update")
-    public String update(@PathVariable Long id,
+                  "or @userService.isCurrentUser(#userId)")
+    @GetMapping("/{userId}/update")
+    public String updateForm(@PathVariable Long userId,
+                             Model model) {
+        model.addAttribute("userId", userId);
+        model.addAttribute("user", userService.readById(userId));
+        model.addAttribute("roles", UserRole.values());
+        return "users/update-user";
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') " +
+                  "or @userService.isCurrentUser(#userId)")
+    @PostMapping("/{userId}/update")
+    public String update(@PathVariable Long userId,
                          Model model,
                          @Validated @ModelAttribute("user") UserUpdateRequest request,
                          BindingResult result) {
-        UserResponse oldUser = userService.findByIdThrowing(id);
+        UserResponse oldUser = userService.findByIdThrowing(userId);
         User authUser = userService.getAuthenticatedUser();
+        if (result.hasErrors()) {
+            model.addAttribute("userId", userId);
+            model.addAttribute("user", request);
+            model.addAttribute("roles", UserRole.values());
+            return "users/update-user";
+        }
 
-        if (authUser.getRole() != UserRole.ADMIN) {
+        boolean isAdmin = authUser.getRole() == UserRole.ADMIN;
+
+        if (!isAdmin) {
             request.setRole(oldUser.getRole());
         }
 
-        if (result.hasErrors()) {
-            model.addAttribute("roles", UserRole.values());
-            return "update-user";
-        }
-
         try {
-            userService.update(id, request, authUser);
-            return "redirect:/users/" + id + "/read";
+            userService.update(userId, request, authUser);
+            return "redirect:/users/" + userId + "/read";
         } catch (IllegalStateException e) {
+            model.addAttribute("userId", userId);
+            model.addAttribute("user", request);
             model.addAttribute("error", e.getMessage());
             model.addAttribute("roles", UserRole.values());
-            return "update-user";
+            return "users/update-user";
         }
 
     }
 
     @PreAuthorize("hasAuthority('ADMIN') " +
-                  "or @userService.getAuthenticatedUser().id == #id")
-    @PostMapping("/{id}/delete")
-    public String delete(@PathVariable Long id,
+                  "or @userService.isCurrentUser(#userId)")
+    @PostMapping("/{userId}/delete")
+    public String delete(@PathVariable Long userId,
                          HttpServletRequest request,
                          HttpServletResponse response) {
+
         User authUser = userService.getAuthenticatedUser();
-        if (authUser.getId().equals(id)) {
-            userService.delete(id);
-            new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+
+        boolean isSelf = authUser.getId().equals(userId);
+
+        userService.delete(userId);
+
+        if (isSelf) {
+            new SecurityContextLogoutHandler()
+                    .logout(request, response, SecurityContextHolder.getContext().getAuthentication());
             return "redirect:/login?logout";
         }
-        userService.delete(id);
-        return "redirect:/users/all";
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/all")
-    public String getAll(Model model){
-        model.addAttribute("users", userService.getAllUsers());
-        return "users-list";
+        userService.delete(userId);
+        return "redirect:/admin/users/all";
     }
 }
