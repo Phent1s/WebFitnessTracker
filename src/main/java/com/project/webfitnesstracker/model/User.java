@@ -2,7 +2,6 @@ package com.project.webfitnesstracker.model;
 
 import com.project.webfitnesstracker.security.config.PasswordConfig;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
@@ -21,6 +20,8 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class User implements UserDetails {
 
     @Id
@@ -51,7 +52,6 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
     }
-
 
     @Override
     public boolean isAccountNonExpired() {
