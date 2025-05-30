@@ -9,7 +9,7 @@ public class LoginController {
 
     @GetMapping("/login")
     public String login(){
-        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString().equals("anonymousUser")){
+        if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString().equals("anonymousUser")){
             return "redirect:/";
         }
         return "login";
