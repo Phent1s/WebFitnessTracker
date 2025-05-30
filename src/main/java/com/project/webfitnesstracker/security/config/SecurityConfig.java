@@ -27,7 +27,7 @@ public class SecurityConfig {
                                 "/img/**",
                                 "/users/register").permitAll()
                         .requestMatchers("/users/**").hasAnyAuthority("ADMIN", "USER")
-                        .requestMatchers("/users/all").hasAuthority("ADMIN")
+                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")
