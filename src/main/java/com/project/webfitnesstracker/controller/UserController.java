@@ -113,7 +113,6 @@ public class UserController {
                     .logout(request, response, SecurityContextHolder.getContext().getAuthentication());
             return "redirect:/login?logout";
         }
-        userService.delete(userId);
         return "redirect:/admin/users/all";
     }
 }
