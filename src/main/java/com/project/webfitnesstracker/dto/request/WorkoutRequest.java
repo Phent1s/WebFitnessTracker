@@ -1,7 +1,5 @@
 package com.project.webfitnesstracker.dto.request;
 
-import com.project.webfitnesstracker.model.User;
-import com.project.webfitnesstracker.model.Workout;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -30,15 +28,4 @@ public class WorkoutRequest {
 
     @Min(value = 1, message = "Should be at least 1 calories")
     private Integer caloriesBurned;
-
-
-    public Workout toEntity(User owner) {
-        return Workout.builder()
-                .type(this.type)
-                .date(this.date)
-                .durationInMinutes(this.durationInMinutes)
-                .caloriesBurned(this.caloriesBurned)
-                .owner(owner)
-                .build();
-    }
 }

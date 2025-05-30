@@ -1,6 +1,5 @@
 package com.project.webfitnesstracker.dto.response;
 
-import com.project.webfitnesstracker.model.Goal;
 import lombok.Builder;
 import lombok.Data;
 
@@ -17,16 +16,4 @@ public class GoalResponse {
     private LocalDate startDate;
     private LocalDate endDate;
     private boolean isAchieved;
-
-    public static GoalResponse fromEntity(Goal goal) {
-        return GoalResponse.builder()
-                .id(goal.getId())
-                .description(goal.getDescription())
-                .targetValue(goal.getTargetValue())
-                .currentValue(goal.getCurrentValue())
-                .startDate(goal.getStartDate())
-                .endDate(goal.getEndDate())
-                .isAchieved(goal.isAchieved())
-                .build();
-    }
 }
