@@ -52,41 +52,48 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User with id " + id + " not found"));
 
-        if (authenticatedUser.getId().equals(id)
-            && authenticatedUser.getRole() == UserRole.ADMIN
-            && userUpdateRequest.getRole() != authenticatedUser.getRole()) {
+        boolean isSelf = authenticatedUser.getId().equals(id);
+        boolean isAdmin = authenticatedUser.getRole() == UserRole.ADMIN;
+        boolean roleChanged = !user.getRole().equals(userUpdateRequest.getRole());
+
+        if (isSelf && isAdmin && roleChanged) {
             throw new IllegalStateException("Admin cannot change his own role!");
         }
 
-        if (authenticatedUser.getRole() == UserRole.ADMIN && !authenticatedUser.getId().equals(id)) {
+        if (roleChanged) {
+            if (!isAdmin) {
+                throw new IllegalStateException("Only admins can change user roles");
+            }
             user.setRole(userUpdateRequest.getRole());
-        } else if (userUpdateRequest.getRole() != user.getRole()) {
-            throw new IllegalStateException("Only admins can change roles of other users");
         }
 
-        updateUser(user, userUpdateRequest);
+        user.setUsername(userUpdateRequest.getUsername());
         userRepository.save(user);
     }
+
 
     public void delete(Long id) {
         User user = readById(id);
         userRepository.delete(user);
     }
 
-    public List<UserResponse> getAllUsers() {
+    public List<UserResponse> getAllUsersSortedById() {
         List<User> users = userRepository.findAllByOrderByIdAsc();
         return users.stream()
                 .map(userMapper::fromEntity)
                 .collect(Collectors.toList());
     }
 
-    private void updateUser(User user, UserUpdateRequest userUpdateRequest) {
-        user.setUsername(userUpdateRequest.getUsername());
-        user.setRole(userUpdateRequest.getRole());
-    }
-
     public User getAuthenticatedUser() {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
+    public boolean isCurrentUser(Long userId) {
+        return getAuthenticatedUser().getId().equals(userId);
+    }
+
+    public User findById(Long id){
+        return userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
     public UserResponse findByIdThrowing(Long id) {
