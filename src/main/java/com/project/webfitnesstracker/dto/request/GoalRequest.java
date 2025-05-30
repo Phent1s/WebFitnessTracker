@@ -1,7 +1,5 @@
 package com.project.webfitnesstracker.dto.request;
 
-import com.project.webfitnesstracker.model.Goal;
-import com.project.webfitnesstracker.model.User;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
@@ -29,15 +27,4 @@ public class GoalRequest {
     @NotNull
     @FutureOrPresent(message = "End date can't be in the past!")
     private LocalDate endDate;
-
-
-    public Goal toEntity(User owner){
-        return Goal.builder()
-                .description(this.description)
-                .targetValue(this.targetValue)
-                .startDate(LocalDate.now())
-                .endDate(this.endDate)
-                .owner(owner)
-                .build();
-    }
 }
