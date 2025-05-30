@@ -65,7 +65,7 @@ public class Goal {
     public String toString() {
         return "Goal{" +
                "id=" + id +
-               ", owner=" + owner +
+               ", owner=" + owner.getUsername() +
                ", description='" + description + '\'' +
                ", targetValue=" + targetValue +
                ", currentValue=" + currentValue +

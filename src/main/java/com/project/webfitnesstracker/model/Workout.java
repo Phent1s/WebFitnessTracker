@@ -59,7 +59,7 @@ public class Workout {
     public String toString() {
         return "Workout{" +
                "id=" + id +
-               ", owner=" + owner +
+               ", owner=" + owner.getUsername() +
                ", type=" + type +
                ", date=" + date +
                ", durationInMinutes=" + durationInMinutes +
