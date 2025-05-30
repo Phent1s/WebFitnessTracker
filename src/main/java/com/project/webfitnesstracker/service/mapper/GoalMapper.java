@@ -22,6 +22,16 @@ public class GoalMapper {
                 .build();
     }
 
+    public Goal toExistingEntity(@NotNull GoalRequest request,
+                                 @NotNull User owner,
+                                 @NotNull Goal existingGoal){
+        existingGoal.setDescription(request.getDescription());
+        existingGoal.setTargetValue(request.getTargetValue());
+        existingGoal.setEndDate(request.getEndDate());
+        existingGoal.setOwner(owner);
+        return existingGoal;
+    }
+
     public GoalResponse fromEntity(@NotNull Goal goal) {
         return GoalResponse.builder()
                 .id(goal.getId())

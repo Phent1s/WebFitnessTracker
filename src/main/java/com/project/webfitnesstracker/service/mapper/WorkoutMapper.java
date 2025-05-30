@@ -21,6 +21,18 @@ public class WorkoutMapper {
                 .build();
     }
 
+    public Workout toExistingEntity(@NotNull WorkoutRequest request,
+                                    @NotNull User owner,
+                                    @NotNull Workout existingWorkout) {
+        existingWorkout.setType(request.getType());
+        existingWorkout.setDate(request.getDate());
+        existingWorkout.setDurationInMinutes(request.getDurationInMinutes());
+        existingWorkout.setCaloriesBurned(request.getCaloriesBurned());
+        existingWorkout.setOwner(owner);
+        return existingWorkout;
+
+    }
+
     public WorkoutResponse fromEntity(@NotNull Workout workout) {
         return WorkoutResponse.builder()
                 .id(workout.getId())
