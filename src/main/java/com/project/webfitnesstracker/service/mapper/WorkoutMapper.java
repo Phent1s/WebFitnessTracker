@@ -33,6 +33,15 @@ public class WorkoutMapper {
 
     }
 
+    public WorkoutRequest toRequest(Workout workout) {
+        return WorkoutRequest.builder()
+                .type(workout.getType())
+                .date(workout.getDate())
+                .durationInMinutes(workout.getDurationInMinutes())
+                .caloriesBurned(workout.getCaloriesBurned())
+                .build();
+    }
+
     public WorkoutResponse fromEntity(@NotNull Workout workout) {
         return WorkoutResponse.builder()
                 .id(workout.getId())
