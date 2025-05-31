@@ -39,6 +39,7 @@ public class GoalService {
         if (!existingGoal.getOwner().getId().equals(ownerId)) {
             throw new AccessDeniedException("Goal does not belong to this user");
         }
+
         goalRepository.save(goalMapper.toExistingEntity(goalRequest, userService.findById(ownerId), existingGoal));
     }
 
@@ -57,15 +58,24 @@ public class GoalService {
                 .collect(Collectors.toList());
     }
 
-    public List<GoalResponse> getAllGoalsSortedByDate() {
-        List<Goal> goals = goalRepository.findAllByOrderByStartDateAsc();
-        return goals.stream()
-                .map(goalMapper::fromEntity)
-                .collect(Collectors.toList());
+    public List<Goal> getAllGoalsSortedByDate() {
+        return goalRepository.findAllByOrderByStartDateAsc();
+    }
+
+    public void makeAchieved(Goal goal){
+        if (goal == null){
+            throw new NullEntityReferenceException("Goal cannot be 'null'");
+        }
+        goal.setAchieved(!goal.isAchieved());
+        goalRepository.save(goal);
     }
 
     public Goal readById(Long goalId) {
         return goalRepository.findById(goalId)
                 .orElseThrow(() -> new EntityNotFoundException("Goal with id " + goalId + " not found"));
+    }
+
+    public GoalRequest toRequest(Goal goal) {
+        return goalMapper.toRequest(goal);
     }
 }
