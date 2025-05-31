@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/template}" lang="en">
+<head>
+    <title>Create Workout</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="create-workout-section">
+        <div class="container">
+            <div class="mb-4">
+                <a th:href="@{|/users/${ownerId}/workouts/all|}" class="btn btn-back">
+                    <i class="bi bi-arrow-left"></i> Back to Workouts
+                </a>
+            </div>
+
+            <div class="create-workout-card">
+                <h1 class="create-title">
+                    <i class="bi bi-plus-circle"></i> Add New Workout
+                </h1>
+
+                <form th:action="@{|/users/${ownerId}/workouts/create|}" th:object="${workout}" method="post" class="workout-form">
+                    <div th:if="${#fields.hasErrors('*')}" class="alert alert-error mb-4">
+                        <i class="bi bi-exclamation-triangle"></i> Please correct the errors below
+                    </div>
+
+                    <div class="form-group mb-4" th:classappend="${#fields.hasErrors('type')} ? 'has-error'">
+                        <label for="type" class="form-label">
+                            <i class="bi bi-activity"></i> Workout Type
+                        </label>
+                        <input type="text" id="type" th:field="*{type}" class="form-control"
+                               placeholder="e.g. Running, Weightlifting, Yoga">
+                        <div class="error-message" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></div>
+                    </div>
+
+                    <div class="form-group mb-4" th:classappend="${#fields.hasErrors('date')} ? 'has-error'">
+                        <label for="date" class="form-label">
+                            <i class="bi bi-calendar"></i> Date
+                        </label>
+                        <input type="date" id="date" th:field="*{date}" class="form-control">
+                        <div class="error-message" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="form-group" th:classappend="${#fields.hasErrors('durationInMinutes')} ? 'has-error'">
+                                <label for="duration" class="form-label">
+                                    <i class="bi bi-clock"></i> Duration (minutes)
+                                </label>
+                                <input type="number" id="duration" th:field="*{durationInMinutes}"
+                                       class="form-control" min="1" value="30">
+                                <div class="error-message" th:if="${#fields.hasErrors('durationInMinutes')}"
+                                     th:errors="*{durationInMinutes}"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group" th:classappend="${#fields.hasErrors('caloriesBurned')} ? 'has-error'">
+                                <label for="calories" class="form-label">
+                                    <i class="bi bi-lightning-charge"></i> Calories Burned
+                                </label>
+                                <input type="number" id="calories" th:field="*{caloriesBurned}"
+                                       class="form-control" min="1" value="200">
+                                <div class="error-message" th:if="${#fields.hasErrors('caloriesBurned')}"
+                                     th:errors="*{caloriesBurned}"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions mt-4">
+                        <button type="submit" class="btn btn-create">
+                            <i class="bi bi-check-circle"></i> Create Workout
+                        </button>
+                        <button type="reset" class="btn btn-reset ms-3">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>
