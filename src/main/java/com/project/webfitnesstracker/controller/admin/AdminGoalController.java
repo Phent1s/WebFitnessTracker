@@ -19,6 +19,6 @@ public class AdminGoalController {
     @GetMapping("/all")
     public String getAll(Model model) {
         model.addAttribute("goals", goalService.getAllGoalsSortedByDate());
-        return "goals/goal-list";
+        return "goals/admins-goal-list";
     }
 }
