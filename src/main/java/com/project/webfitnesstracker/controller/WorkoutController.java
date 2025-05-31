@@ -63,8 +63,9 @@ public class WorkoutController {
     public String updateForm(@PathVariable Long ownerId,
                              @PathVariable Long workoutId,
                              Model model) {
+        Workout workout = workoutService.readById(workoutId);
         model.addAttribute("workoutId", workoutId);
-        model.addAttribute("workout", workoutService.readById(workoutId));
+        model.addAttribute("workout", workoutService.toRequest(workout));
         model.addAttribute("ownerId", ownerId);
         return "workouts/update-workout";
     }
@@ -80,9 +81,10 @@ public class WorkoutController {
         if (result.hasErrors()) {
             model.addAttribute("workoutId", workoutId);
             model.addAttribute("ownerId", ownerId);
-            model.addAttribute("workout", workoutService.readById(workoutId));
+            model.addAttribute("workout", workoutRequest);
             return "workouts/update-workout";
         }
+
         workoutService.update(workoutRequest, ownerId, workoutService.readById(workoutId));
         return "redirect:/users/" + ownerId + "/workouts/" + workoutId + "/read";
     }
