@@ -8,6 +8,7 @@ import com.project.webfitnesstracker.model.UserRole;
 import com.project.webfitnesstracker.repository.UserRepository;
 import com.project.webfitnesstracker.security.exception.NullEntityReferenceException;
 import com.project.webfitnesstracker.service.mapper.UserMapper;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -44,6 +45,10 @@ public class UserService implements UserDetailsService {
             throw new NullEntityReferenceException("User cannot be 'null'");
         }
 
+        if (userRepository.findByUsername(userCreateRequest.getUsername()).isPresent()) {
+            throw new EntityExistsException("User with username " + userCreateRequest.getUsername() + " already exists");
+        }
+
         userCreateRequest.setPassword(passwordEncoder.encode(userCreateRequest.getPassword()));
         return userRepository.save(userMapper.toEntity(userCreateRequest));
     }
@@ -56,6 +61,13 @@ public class UserService implements UserDetailsService {
         boolean isAdmin = authenticatedUser.getRole() == UserRole.ADMIN;
         boolean roleChanged = !user.getRole().equals(userUpdateRequest.getRole());
 
+        if (!user.getUsername().equals(userUpdateRequest.getUsername())) {
+            if (userRepository.findByUsername(userUpdateRequest.getUsername()).isPresent()) {
+                throw new EntityExistsException("User with username " + userUpdateRequest.getUsername() + " already exists");
+            }
+            user.setUsername(userUpdateRequest.getUsername());
+        }
+
         if (isSelf && isAdmin && roleChanged) {
             throw new IllegalStateException("Admin cannot change his own role!");
         }
@@ -66,8 +78,6 @@ public class UserService implements UserDetailsService {
             }
             user.setRole(userUpdateRequest.getRole());
         }
-
-        user.setUsername(userUpdateRequest.getUsername());
         userRepository.save(user);
     }
 
