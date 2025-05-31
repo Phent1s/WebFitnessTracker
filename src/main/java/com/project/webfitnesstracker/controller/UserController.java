@@ -6,6 +6,7 @@ import com.project.webfitnesstracker.dto.response.UserResponse;
 import com.project.webfitnesstracker.model.User;
 import com.project.webfitnesstracker.model.UserRole;
 import com.project.webfitnesstracker.service.UserService;
+import jakarta.persistence.EntityExistsException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -36,8 +37,14 @@ public class UserController {
         if (result.hasErrors()) {
             return "users/register-user";
         }
-        userService.create(request);
-        return "redirect:/login";
+
+        try {
+            userService.create(request);
+            return "redirect:/login";
+        }catch (EntityExistsException ex){
+            result.rejectValue("username", "error.user", ex.getMessage());
+            return "users/register-user";
+        }
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
@@ -85,14 +92,19 @@ public class UserController {
         try {
             userService.update(userId, request, authUser);
             return "redirect:/users/" + userId + "/read";
-        } catch (IllegalStateException e) {
+        } catch (IllegalStateException ex) {
+            result.rejectValue("role", "error.role", ex.getMessage());
             model.addAttribute("userId", userId);
             model.addAttribute("user", request);
-            model.addAttribute("error", e.getMessage());
+            model.addAttribute("roles", UserRole.values());
+            return "users/update-user";
+        } catch (EntityExistsException ex) {
+            result.rejectValue("username", "error.user", ex.getMessage());
+            model.addAttribute("userId", userId);
+            model.addAttribute("user", request);
             model.addAttribute("roles", UserRole.values());
             return "users/update-user";
         }
-
     }
 
     @PreAuthorize("hasAuthority('ADMIN') " +
