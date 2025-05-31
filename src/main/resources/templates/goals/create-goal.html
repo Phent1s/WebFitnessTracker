@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/template}" lang="en">
+<head>
+    <title>Create Goal</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="create-goal-section">
+        <div class="container">
+            <div class="mb-4">
+                <a th:href="@{|/users/${ownerId}/goals/all|}" class="btn btn-back">
+                    <i class="bi bi-arrow-left"></i> Back to Goals
+                </a>
+            </div>
+
+            <div class="create-goal-card">
+                <h1 class="create-title">
+                    <i class="bi bi-plus-circle"></i> New Goal
+                </h1>
+
+                <form th:action="@{|/users/${ownerId}/goals/create|}" th:object="${goal}" method="post" class="goal-form">
+                    <div th:if="${#fields.hasErrors('*')}" class="alert alert-error mb-4">
+                        <i class="bi bi-exclamation-triangle"></i> Please correct the errors below
+                    </div>
+
+                    <div class="form-group mb-4" th:classappend="${#fields.hasErrors('description')} ? 'has-error'">
+                        <label for="description" class="form-label">
+                            <i class="bi bi-card-text"></i> Goal Description
+                        </label>
+                        <textarea id="description" th:field="*{description}" class="form-control"
+                                  placeholder="Describe your goal (e.g. Lose 5kg, Run 100km)" rows="3"></textarea>
+                        <div class="error-message" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="form-group" th:classappend="${#fields.hasErrors('targetValue')} ? 'has-error'">
+                                <label for="targetValue" class="form-label">
+                                    <i class="bi bi-target"></i> Target Value
+                                </label>
+                                <input type="number" id="targetValue" th:field="*{targetValue}"
+                                       class="form-control" min="0.01" step="0.01" placeholder="100.00">
+                                <div class="error-message" th:if="${#fields.hasErrors('targetValue')}"
+                                     th:errors="*{targetValue}"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group" th:classappend="${#fields.hasErrors('endDate')} ? 'has-error'">
+                                <label for="endDate" class="form-label">
+                                    <i class="bi bi-calendar"></i> Target Date
+                                </label>
+                                <input type="date" id="endDate" th:field="*{endDate}" class="form-control">
+                                <div class="error-message" th:if="${#fields.hasErrors('endDate')}"
+                                     th:errors="*{endDate}"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions mt-4">
+                        <button type="submit" class="btn btn-create">
+                            <i class="bi bi-check-circle"></i> Create Goal
+                        </button>
+                        <button type="reset" class="btn btn-reset ms-3">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>
