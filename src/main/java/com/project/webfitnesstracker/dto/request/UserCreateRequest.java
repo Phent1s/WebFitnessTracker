@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.UniqueElements;
 
 @Data
 @Builder
@@ -24,6 +25,5 @@ public class UserCreateRequest {
             message = "Must be minimum 6 characters, at least one letter and one number")
     private String password;
 
-    @NotNull
-    private UserRole role;
+    private UserRole role = UserRole.USER;
 }

@@ -24,7 +24,11 @@ public class GoalRequest {
     @DecimalMin(value = "0.01", message = "Target Value should be at least 0.01!")
     private BigDecimal targetValue;
 
-    @NotNull
+    @NotNull(message = "Date can't be empty!")
     @FutureOrPresent(message = "End date can't be in the past!")
     private LocalDate endDate;
+
+    @DecimalMin(value = "0", message = "Current Value should be at least 0!")
+    private BigDecimal currentValue = BigDecimal.ZERO;
+
 }
