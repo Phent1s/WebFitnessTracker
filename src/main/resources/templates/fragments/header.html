@@ -1,0 +1,63 @@
+<nav xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+     class="navbar navbar-expand-lg navbar-custom navbar-dark sticky-top">
+    <div class="container-fluid">
+        <div class="d-flex align-items-center">
+            <a class="navbar-brand fw-bold me-3" th:href="@{/}">
+                <img src="/img/favicon-32x32.png" alt="Logo" width="32" height="32"
+                     class="d-inline-block align-top me-2">
+                Fitness Tracker
+            </a>
+
+            <div class="dropdown" sec:authorize="isAuthenticated()">
+                <button class="btn btn-outline-light dropdown-toggle" type="button" id="userDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-list-task"></i> Menu
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" th:href="@{|/users/${#authentication.principal.id}/workouts/all|}"><i
+                            class="bi bi-bar-chart-line me-2"></i>Workouts</a></li>
+                    <li><a class="dropdown-item" th:href="@{|/users/${#authentication.principal.id}/goals/all|}"><i
+                            class="bi bi-bullseye me-2"></i>Goals</a></li>
+                    <li><a class="dropdown-item" th:href="@{/stats}"><i class="bi bi-graph-up me-2"></i>Stats</a></li>
+                </ul>
+            </div>
+
+            <div class="dropdown" sec:authorize="hasAuthority('ADMIN')">
+                <button class="btn btn-outline-warning dropdown-toggle" type="button" id="adminDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-shield-lock"></i> Admin
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" th:href="@{/admin/users/all}"><i class="bi bi-people me-2"></i>All
+                        Users</a></li>
+                    <li><a class="dropdown-item" th:href="@{/admin/workouts/all}"><i
+                            class="bi bi-bar-chart-line me-2"></i>All Workouts</a></li>
+                    <li><a class="dropdown-item" th:href="@{/admin/goals/all}"><i class="bi bi-bullseye me-2"></i>All
+                        Goals</a></li>
+                    <li><a class="dropdown-item" th:href="@{/stats/all}"><i class="bi bi-graph-up me-2"></i>All
+                        Stats</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center">
+            <span class="navbar-text me-3" sec:authorize="isAuthenticated()">
+                <i class="bi bi-person-circle me-1"></i>
+                <a th:href="@{|/users/${#authentication.principal.id}/read|}"
+                   th:text="${#authentication.principal.username}"
+                   class="fw-bold text-decoration-none"></a>
+            </span>
+
+            <a class="btn btn-outline-light me-2" th:href="@{/login}" sec:authorize="!isAuthenticated()">
+                <i class="bi bi-box-arrow-in-right"></i> Login
+            </a>
+
+            <form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
+                <button type="submit" class="btn btn-logout btn-outline-light">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
+            </form>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/template}" lang="en">
+<head>
+    <title>Login</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="auth-section">
+        <div class="auth-container">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <img src="/img/favicon.png" alt="Logo" class="auth-logo">
+                    <h2 class="auth-title">Welcome Back</h2>
+                    <p class="auth-subtitle">Sign in to continue your fitness journey</p>
+                </div>
+
+                <form th:action="@{/login}" method="post" class="auth-form">
+                    <div th:if="${param.error}" class="alert alert-error">
+                        <i class="bi bi-exclamation-circle"></i> Invalid username or password
+                    </div>
+
+                    <div class="form-group">
+                        <label for="username" class="form-label">
+                            <i class="bi bi-person"></i> Username
+                        </label>
+                        <input type="text" id="username" name="username" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">
+                            <i class="bi bi-lock"></i> Password
+                        </label>
+                        <input type="password" id="password" name="password" class="form-control" required>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-auth">
+                            Sign In <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <div class="auth-footer">
+                        <p>Don't have an account? <a th:href="@{/users/register}" class="auth-link">Register here</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/template}" lang="en">
+<head>
+    <title>Goal Details</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="goal-details-section">
+        <div class="container">
+            <div class="mb-4">
+                <a th:href="@{|/users/${ownerId}/goals/all|}" class="btn btn-back">
+                    <i class="bi bi-arrow-left"></i> Back to Goals
+                </a>
+            </div>
+
+            <div class="goal-details-card" th:classappend="${goal.isAchieved} ? 'goal-achieved'">
+                <div class="goal-header">
+                    <h1 class="goal-title" th:text="${goal.description}">Goal Description</h1>
+                    <div class="goal-status" th:classappend="${goal.isAchieved} ? 'achieved' : 'in-progress'">
+                        <span th:text="${goal.isAchieved} ? 'Achieved' : 'In Progress'"></span>
+                    </div>
+                </div>
+
+                <div class="goal-content">
+                    <div class="goal-metrics">
+                        <div class="metric-item">
+                            <div class="metric-label">
+                                <i class="bi bi-target"></i> Target Value
+                            </div>
+                            <div class="metric-value" th:text="${goal.targetValue}">0</div>
+                        </div>
+
+                        <div class="metric-item">
+                            <div class="metric-label">
+                                <i class="bi bi-check-circle"></i> Current Value
+                            </div>
+                            <div class="metric-value" th:text="${goal.currentValue}">0</div>
+                        </div>
+
+                        <div class="metric-item">
+                            <div class="metric-label">
+                                <i class="bi bi-calendar-range"></i> Duration
+                            </div>
+                            <div class="metric-value">
+                                <span th:text="${#temporals.format(goal.startDate, 'MMM d, yyyy')}"></span> -
+                                <span th:text="${#temporals.format(goal.endDate, 'MMM d, yyyy')}"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="goal-actions">
+                        <form th:action="@{|/users/${ownerId}/goals/${goal.id}/toggle|}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-status" th:classappend="${goal.isAchieved} ? 'btn-success' : 'btn-secondary'">
+                                <span th:text="${goal.isAchieved} ? 'Mark as In Progress' : 'Mark as Achieved'"></span>
+                            </button>
+                        </form>
+
+                        <a th:href="@{|/users/${ownerId}/goals/${goal.id}/update|}" class="btn btn-edit">
+                            <i class="bi bi-pencil"></i> Edit Goal
+                        </a>
+
+                        <button type="button" class="btn btn-delete" data-bs-toggle="modal" data-bs-target="#deleteGoalModal">
+                            <i class="bi bi-trash"></i> Delete Goal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade" id="deleteGoalModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete goal: <strong th:text="${goal.description}"></strong>?</p>
+                    <p class="text-danger">This action cannot be undone!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form th:action="@{|/users/${ownerId}/goals/${goal.id}/delete|}" method="post">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

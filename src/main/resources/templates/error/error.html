@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/template}" lang="en">
+<head>
+    <title>Error | Fitness Tracker</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="error-section">
+        <div class="container">
+            <div class="error-card">
+                <div class="error-icon">
+                    <i class="bi bi-exclamation-octagon"></i>
+                </div>
+                <h1 class="error-code" th:text="${code}">500 / Internal Server Error</h1>
+                <h2 class="error-message" th:text="${message}">Something went wrong</h2>
+                <p class="error-description">
+                    We encountered an unexpected error. Please try again later or contact support if the problem persists.
+                </p>
+                <div class="error-actions">
+                    <a th:href="@{/}" class="btn btn-home">
+                        <i class="bi bi-house"></i> Go to Homepage
+                    </a>
+                    <a href="javascript:history.back()" class="btn btn-contact">
+                        <i class="bi bi-headset"></i> Go Back
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>
