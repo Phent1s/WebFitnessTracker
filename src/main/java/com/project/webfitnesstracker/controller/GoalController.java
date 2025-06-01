@@ -42,7 +42,7 @@ public class GoalController {
         }
 
         goalService.create(ownerId, goalRequest);
-        return "redirect:/users/" + ownerId + "/workouts/all";
+        return "redirect:/users/" + ownerId + "/goals/all";
     }
 
     @PreAuthorize("hasAuthority('ADMIN') " +
@@ -64,8 +64,9 @@ public class GoalController {
     public String updateForm(@PathVariable Long ownerId,
                              @PathVariable Long goalId,
                              Model model) {
+        Goal goal = goalService.readById(goalId);
         model.addAttribute("goalId", goalId);
-        model.addAttribute("goal", goalService.readById(goalId));
+        model.addAttribute("goal", goalService.toRequest(goal));
         model.addAttribute("ownerId", ownerId);
         return "goals/update-goal";
     }
@@ -81,7 +82,7 @@ public class GoalController {
         if (result.hasErrors()) {
             model.addAttribute("ownerId", ownerId);
             model.addAttribute("goalId", goalId);
-            model.addAttribute("goal", goalService.readById(goalId));
+            model.addAttribute("goal", goalRequest);
             return "goals/update-goal";
         }
 
@@ -109,4 +110,12 @@ public class GoalController {
         return "goals/goal-list";
     }
 
+    @PreAuthorize("hasAuthority('ADMIN') " +
+                  "or @userService.isCurrentUser(#ownerId)")
+    @PostMapping("/{goalId}/toggle")
+    public String toggleAchieved(@PathVariable Long ownerId,
+                                 @PathVariable Long goalId) {
+        goalService.makeAchieved(goalService.readById(goalId));
+        return "redirect:/users/" + ownerId + "/goals/all";
+    }
 }
