@@ -1,6 +1,7 @@
 package com.project.webfitnesstracker.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -29,6 +30,7 @@ public class Workout {
     private String type;
 
     @Column(nullable = false)
+    @FutureOrPresent(message = "Date can't be in the past!")
     private LocalDate date;
 
     @Column(name = "duration_minutes", nullable = false)
