@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/template}" lang="en">
+<head>
+    <title>All Workouts | Fitness Tracker</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="workouts-section">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="page-title">
+                    <i class="bi bi-bar-chart-line"></i> All Workouts
+                </h1>
+                <div>
+                    <a th:href="@{/}" class="btn btn-back">
+                        <i class="bi bi-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+
+            <div class="workouts-card">
+<!--                <div class="workouts-filters mb-4">-->
+<!--                    <div class="row g-3">-->
+<!--                        <div class="col-md-3">-->
+<!--                            <label for="userFilter" class="form-label">User</label>-->
+<!--                            <select id="userFilter" class="form-select">-->
+<!--                                <option selected>All Users</option>-->
+<!--                                <option th:each="user : ${workouts.![owner]}"-->
+<!--                                        th:text="${user.username}"></option>-->
+<!--                            </select>-->
+<!--                        </div>-->
+<!--                        <div class="col-md-3">-->
+<!--                            <label for="typeFilter" class="form-label">Type</label>-->
+<!--                            <select id="typeFilter" class="form-select">-->
+<!--                                <option selected>All Types</option>-->
+<!--                                <option th:each="type : ${workouts.![type]}"-->
+<!--                                        th:text="${type}"></option>-->
+<!--                            </select>-->
+<!--                        </div>-->
+<!--                        <div class="col-md-3">-->
+<!--                            <label for="dateFrom" class="form-label">From</label>-->
+<!--                            <input type="date" id="dateFrom" class="form-control">-->
+<!--                        </div>-->
+<!--                        <div class="col-md-3">-->
+<!--                            <label for="dateTo" class="form-label">To</label>-->
+<!--                            <input type="date" id="dateTo" class="form-control">-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+                <div class="table-responsive">
+                    <table class="table workouts-table">
+                        <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Type</th>
+                            <th>Date</th>
+                            <th>Duration</th>
+                            <th>Calories</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="workout : ${workouts}">
+                            <td>
+                                <a th:href="@{|/users/${workout.owner.id}/read|}"
+                                   th:text="${workout.owner.username}"
+                                   class="user-link"></a>
+                            </td>
+                            <td>
+                                <span th:text="${workout.type}" class="workout-type"></span>
+                            </td>
+                            <td>
+                                <span th:text="${#temporals.format(workout.date, 'dd MMM yyyy')}"></span>
+                            </td>
+                            <td>
+                                <span th:text="${workout.durationInMinutes} + ' min'"></span>
+                            </td>
+                            <td>
+                                <span th:text="${workout.caloriesBurned} + ' kcal'"></span>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a th:href="@{|/users/${workout.owner.id}/workouts/${workout.id}/read|}"
+                                       class="btn btn-action btn-view">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a th:href="@{|/users/${workout.owner.id}/workouts/${workout.id}/update|}"
+                                       class="btn btn-action btn-edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <button type="button"
+                                            class="btn btn-action btn-delete"
+                                            data-bs-toggle="modal"
+                                            th:attr="data-bs-target='#deleteWorkoutModal' + ${workout.id}">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${workouts.empty}">
+                            <td colspan="6" class="text-center text-muted py-4">
+                                No workouts found in the system.
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div th:each="workout : ${workouts}" th:id="'deleteWorkoutModal' + ${workout.id}" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Workout Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete <strong th:text="${workout.type}"></strong> workout from
+                        <strong th:text="${workout.owner.username}"></strong> on
+                        <strong th:text="${#temporals.format(workout.date, 'dd MMM yyyy')}"></strong>?</p>
+                    <p class="text-danger">This action cannot be undone!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form th:action="@{|/users/${workout.owner.id}/workouts/${workout.id}/delete|}" method="post">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/template}" lang="en">
+<head>
+    <title>Page Not Found</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="error-section">
+        <div class="container">
+            <div class="error-card">
+                <div class="error-icon">
+                    <i class="bi bi-map"></i>
+                </div>
+                <h1 class="error-code" th:text="${code}">404 / Not Found</h1>
+                <h2 class="error-message" th:text="${message}">Oops! We can't find this page</h2>
+                <p class="error-description">
+                    The page you're looking for doesn't exist or has been moved.
+                    Check the URL or navigate back to our homepage.
+                </p>
+                <div class="error-actions">
+                    <a th:href="@{/}" class="btn btn-home">
+                        <i class="bi bi-house"></i> Go to Homepage
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>
