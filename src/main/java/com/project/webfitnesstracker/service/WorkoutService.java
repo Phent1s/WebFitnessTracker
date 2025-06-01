@@ -57,11 +57,8 @@ public class WorkoutService {
                 .collect(Collectors.toList());
     }
 
-    public List<WorkoutResponse> getAllWorkoutsSortedByDate(){
-        List<Workout> workouts = workoutRepository.findAllByOrderByDateAsc();
-        return workouts.stream()
-                .map(workoutMapper::fromEntity)
-                .collect(Collectors.toList());
+    public List<Workout> getAllWorkoutsSortedByDate(){
+        return workoutRepository.findAllByOrderByDateAsc();
     }
 
     public Workout readById(Long workoutId){
@@ -69,5 +66,7 @@ public class WorkoutService {
                 .orElseThrow(() -> new EntityNotFoundException("Workout with id " + workoutId + " not found"));
     }
 
-
+    public WorkoutRequest toRequest(Workout workout){
+        return workoutMapper.toRequest(workout);
+    }
 }
