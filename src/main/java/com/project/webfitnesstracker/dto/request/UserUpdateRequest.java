@@ -16,9 +16,7 @@ import lombok.NoArgsConstructor;
 public class UserUpdateRequest {
 
     @Size(min = 3, max = 50, message = "Username should be from 3 to 50 digits")
-    @NotBlank(message = "Username can't be empty!")
     private String username;
 
-    @NotNull
     private UserRole role;
 }
