@@ -1,4 +1,4 @@
-FROM openjdk:17
+FROM eclipse-temurin:17-jdk
 
 ARG JAR_FILE=WebFitnessTracker-1.0.0.jar
 
